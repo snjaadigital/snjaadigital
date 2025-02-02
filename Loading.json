@@ -1,48 +1,58 @@
-{
-  "v": "5.7.1",
-  "fr": 30,
-  "ip": 0,
-  "op": 60,
-  "w": 500,
-  "h": 500,
-  "nm": "Loading Animation",
-  "ddd": 0,
-  "assets": [
-    {
-      "id": "image_0",
-      "w": 500,
-      "h": 500,
-      "u": "",
-      "p": "9lqa6v.png",
-      "e": 0
-    }
-  ],
-  "layers": [
-    {
-      "ddd": 0,
-      "ind": 1,
-      "ty": 2,
-      "nm": "Logo",
-      "refId": "image_0",
-      "ks": {
-        "o": {
-          "a": 1,
-          "k": [
-            { "t": 0, "s": [0] },
-            { "t": 30, "s": [100] }
-          ]
-        },
-        "r": {
-          "a": 1,
-          "k": [
-            { "t": 0, "s": [0] },
-            { "t": 60, "s": [360] }
-          ]
-        },
-        "p": { "a": 0, "k": [250, 250, 0] },
-        "s": { "a": 0, "k": [100, 100, 100] }
-      },
-      "ao": 0
-    }
-  ]
+import json
+
+# Struktur JSON untuk animasi Lottie (rotasi logo sebagai efek loading)
+lottie_animation = {
+    "v": "5.7.1",
+    "fr": 30,
+    "ip": 0,
+    "op": 60,
+    "w": 500,
+    "h": 500,
+    "nm": "Loading Animation",
+    "ddd": 0,
+    "assets": [
+        {
+            "id": "image_0",
+            "w": 500,
+            "h": 500,
+            "u": "",
+            "p": "9lqa6v.png",
+            "e": 0
+        }
+    ],
+    "layers": [
+        {
+            "ddd": 0,
+            "ind": 1,
+            "ty": 2,
+            "nm": "Logo",
+            "refId": "image_0",
+            "ks": {
+                "o": {
+                    "a": 1,
+                    "k": [
+                        { "t": 0, "s": [0] },
+                        { "t": 15, "s": [100] }
+                    ]
+                },
+                "r": {
+                    "a": 1,
+                    "k": [
+                        { "t": 0, "s": [0] },
+                        { "t": 60, "s": [360] }
+                    ]
+                },
+                "p": { "a": 0, "k": [250, 250, 0] },
+                "s": { "a": 0, "k": [100, 100, 100] }
+            },
+            "ao": 0
+        }
+    ]
 }
+
+# Simpan ke file JSON
+file_path = "/mnt/data/loading_animation.json"
+with open(file_path, "w") as json_file:
+    json.dump(lottie_animation, json_file, indent=4)
+
+file_path
