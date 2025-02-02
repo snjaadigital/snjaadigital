@@ -1,6 +1,4 @@
-import json
 
-# Struktur JSON untuk animasi Lottie (rotasi logo sebagai efek loading)
 lottie_animation = {
     "v": "5.7.1",
     "fr": 30,
@@ -50,9 +48,3 @@ lottie_animation = {
     ]
 }
 
-# Simpan ke file JSON
-file_path = "/mnt/data/loading_animation.json"
-with open(file_path, "w") as json_file:
-    json.dump(lottie_animation, json_file, indent=4)
-
-file_path
