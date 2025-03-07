@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Akun Premium</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #1564c0;
+        }
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background: #1564c0;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #0d4a90;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .close {
+            float: right;
+            cursor: pointer;
+            color: red;
+            font-size: 20px;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .modal button {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Store Akun Premium</h2>
+    <p id="user-info">Mendeteksi pengguna...</p>
+    
+    <div class="product-list">
+        <div class="product">
+            <span>Netflix</span>
+            <button class="btn" onclick="openModal('Netflix', netflixVarian)">Lihat Varian</button>
+        </div>
+        <div class="product">
+            <span>Canva Pro</span>
+            <button class="btn" onclick="openModal('Canva Pro', canvaVarian)">Lihat Varian</button>
+        </div>
+        <div class="product">
+            <span>CapCut Pro</span>
+            <button class="btn" onclick="openModal('CapCut Pro', capcutVarian)">Lihat Varian</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3 id="product-name"></h3>
+        <select id="varian"></select>
+        <button class="btn" onclick="submitOrder()">Pesan Sekarang</button>
+    </div>
+</div>
+
+<script>
+    let selectedProduct = "";
+    let userName = "Pengguna Tidak Diketahui";
+    let userLink = "";
+
+    const telegram = window.Telegram.WebApp;
+    
+    // Cek apakah Telegram WebApp tersedia
+    if (telegram.initDataUnsafe.user) {
+        const user = telegram.initDataUnsafe.user;
+        userName = user.first_name + (user.last_name ? " " + user.last_name : "");
+        userLink = `https://t.me/${user.username}`;
+        document.getElementById("user-info").innerHTML = `👤 <b>${userName}</b> (<a href="${userLink}" target="_blank">@${user.username}</a>)`;
+    } else {
+        document.getElementById("user-info").innerText = "Tidak bisa mendapatkan data pengguna.";
+    }
+
+    const netflixVarian = [
+        { name: "Sharing - 1 Bulan", price: 25000 },
+        { name: "Private - 1 Bulan", price: 75000 },
+        { name: "Premium - 1 Tahun", price: 200000 }
+    ];
+    
+    const canvaVarian = [
+        { name: "Pro - 1 Bulan", price: 30000 },
+        { name: "Pro - 6 Bulan", price: 120000 },
+        { name: "Pro - 1 Tahun", price: 200000 }
+    ];
+    
+    const capcutVarian = [
+        { name: "CapCut Pro - 1 Bulan", price: 35000 },
+        { name: "CapCut Pro - 6 Bulan", price: 150000 }
+    ];
+
+    function openModal(product, variants) {
+        selectedProduct = product;
+        document.getElementById("product-name").innerText = product;
+        
+        let select = document.getElementById("varian");
+        select.innerHTML = "";
+        
+        variants.forEach(variant => {
+            let option = document.createElement("option");
+            option.value = `${variant.name}|${variant.price}`;
+            option.textContent = `${variant.name} - Rp ${variant.price}`;
+            select.appendChild(option);
+        });
+
+        document.getElementById("modal").classList.add("show");
+    }
+
+    function closeModal() {
+        document.getElementById("modal").classList.remove("show");
+    }
+
+    function submitOrder() {
+        let varianData = document.getElementById("varian").value.split("|");
+        let varian = varianData[0];
+        let harga = varianData[1];
+
+        let message = `Ada Yang Beli Nih!\nProduk: ${selectedProduct}\nVarian: ${varian}\nHarga: Rp ${harga}\nNama: ${userName}\nLink: ${userLink}\nBuruan Di Respon!`;
+
+        let botToken = "7402769692:AAEyXrPrGyipgbks9gSR90-0izd0Zq-6NhA";
+        let chatId = "7562757992";
+
+        let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert("Pesanan berhasil dikirim!");
+                    closeModal();
+                } else {
+                    alert("Gagal mengirim pesanan!");
+                }
+            })
+            .catch(error => alert("Terjadi kesalahan!"));
+    }
+</script>
+
+</body>
+</html>
